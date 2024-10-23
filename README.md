@@ -1,7 +1,7 @@
 # WinRipEncode
-🚧 Under Construction - Very Early Development 🚧
-Effortlessly rip your BluRay/DVDs, transcode the content, and automatically rename files with ease.
-Utilizing MakeMKV, HandBrake, and FileBot to (mostly) automate the process of ripping, transcoding, and renaming your BluRays/DVDs on Windows.
+🚧 Under Construction - Very Early Development 🚧  
+Effortlessly rip your BluRay/DVDs, transcode the content, and automatically rename files with ease.  
+Utilizing MakeMKV, HandBrake, and FileBot to (mostly) automate the process of ripping, transcoding, and renaming your BluRays/DVDs on Windows.  
 
 ## Current Stage of Development
 
@@ -11,7 +11,7 @@ The GUI is not functional at the moment, and the FileBot feature has not been im
 ## Requirements Before Using the Script
 
 
-Before you start, you will need the following programs:
+Before you start, you will need the following programs:  
 
 -   MakeMKV
 -   HandBrakeCLI
