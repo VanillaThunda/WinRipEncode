@@ -1,29 +1,30 @@
 # Inspiration from: https://gist.github.com/tacofumi/3041eac2f59da7a775c6
-# Verzeichnis von MakeMKV
+
+# Directory to MakeMKV
 $makemkvDir = "C:\Program Files (x86)\MakeMKV"
 
-# Ausgabeverzeichnis der rohen MKV-Dateien
+# Output dir for the raw MKV-Files which are in the making
 $workingDir = "D:\Ripping\01_MakeMKV-working"
 
-# Ausgabeverzeichnis der fertigen MKV-Datei
+# Output dir for the finished MKV-Files
 $doneDir = "D:\Ripping\02_MakeMKV-done"
 
-# Datei um die Infos um den Titel zu erhalten zwischenzuspeichern
+# Directory for the temporary info/title file which is used to get the movie title
 $rawTitleFile = "D:\Ripping\98_AutoRip-Logs\title-raw.txt"
 
-# Buchstabe zum Laufwerk
+# Optical Drive Letter
 $discletter = "E:"
 
-# Suchbegriffe vor und nach dem Title um diesen zu extrahieren
+# Search Mask to extract the title. The String before and after the title. For me this was my BD-Drive Name/SN and the Drive Letter
 $searchBeforeTitle = "BD-RE HL-DT-ST BD-RE BU40N 1\.03 7MEQVHAKKGZ012"
 $searchAfterTitle = "E:"
 
-# '--minlength' Parameter fpr MakeMKV (Default from MakeMKV is 120 Sec.)
+# '--minlength' Defines the minimum lenght for a video file to be ripped - (Default from MakeMKV is 120 Sec.)
 $minlength = "240"
 
 # ----------------------------------------------------
 
-# Logdatei definieren
+# Define Logfile
 $timestamp = Get-Date -Format "yyyy-MM-dd_HH-mm"
 $logFile = "D:\Ripping\98_AutoRip-Logs\MakeMKV\MakeMKV_$timestamp.log"
 Start-Transcript -Path $logFile -Append
@@ -35,39 +36,39 @@ Write-Host "----------------------------------------" -ForegroundColor Magenta
 # Log current date and time
 Write-Host (Get-Date) -ForegroundColor Magenta
 
-Write-Host "[$(Get-Date -Format "yyyy-MM-dd - HH:mm:ss")] >>> Durchsuche die Disk..." -ForegroundColor Green
-# MakeMKV Info starten um den Titel herauszufinden -> Schreibe den Output in eine txt Datei um diese per Regex zu durchsuchen und den Titel zu finden
+Write-Host "[$(Get-Date -Format "yyyy-MM-dd - HH:mm:ss")] >>> Searching Disc..." -ForegroundColor Green
+# Start MakeMKV Info to get the Basic Disc informations from which we can grab the title of the movie
 & "$makemkvDir\makemkvcon.exe" -r info | Out-File -FilePath "$rawTitleFile"
 
-# Überprüfen, ob die Datei existiert
+# Check if title-file exists
 if (Test-Path $rawTitleFile) {
-    # Dateiinhalt einlesen
+    # Reading the File
     $titleContent = Get-Content $rawTitleFile -Raw
 
-    # Gib den eingelesenen Inhalt zur Überprüfung aus (optional)
-    Write-Host "[$(Get-Date -Format "yyyy-MM-dd - HH:mm:ss")] >>> Inhalt der Datei: `n$titleContent" -ForegroundColor Cyan
+    # Raw output of the file
+    Write-Host "[$(Get-Date -Format "yyyy-MM-dd - HH:mm:ss")] >>> Content of the Title-File: `n$titleContent" -ForegroundColor Cyan
 
-    # Dynamischer Aufbau des regulären Ausdrucks mit den Variablen
+    # Building a Regex to extract the title
     $regex = '"' + $searchBeforeTitle + '","([^"]+)","' + $searchAfterTitle + '"'
     Write-Host "[$(Get-Date -Format "yyyy-MM-dd - HH:mm:ss")] >>> Regex = $regex" -ForegroundColor Green
 
-    # Verwende den regulären Ausdruck, um den Titel zwischen den konstanten Werten zu extrahieren
+    # Using the Regex to extract the title
     if ($titleContent -match $regex) {
-        # Speichere den gefundenen Titel in $foundtitle
+        # Save the found title in $foundtitle
         $foundtitle = $Matches[1]
-        Write-Host "[$(Get-Date -Format "yyyy-MM-dd - HH:mm:ss")] >>> Gefundener Titel: '$foundtitle'" -ForegroundColor Green
+        Write-Host "[$(Get-Date -Format "yyyy-MM-dd - HH:mm:ss")] >>> Found Title: '$foundtitle'" -ForegroundColor Green
         $rawTitleFile | Remove-Item
     } else {
-        # Falls kein Treffer gefunden wurde, gib eine Fehlermeldung aus
-        Write-Host "[$(Get-Date -Format "yyyy-MM-dd - HH:mm:ss")] >>> Kein gueltiger Titel gefunden" -ForegroundColor Red
+        # If no match was found, output an error message
+        Write-Host "[$(Get-Date -Format "yyyy-MM-dd - HH:mm:ss")] >>> No valid Title found!" -ForegroundColor Red
         $rawTitleFile | Remove-Item
         exit
     }
 } else {
-    Write-Host "[$(Get-Date -Format "yyyy-MM-dd - HH:mm:ss")] >>> Die Datei '$rawTitleFile' wurde nicht gefunden." -ForegroundColor Red
+    Write-Host "[$(Get-Date -Format "yyyy-MM-dd - HH:mm:ss")] >>> The File '$rawTitleFile' was not found!" -ForegroundColor Red
 }
 
-Write-Host "[$(Get-Date -Format "yyyy-MM-dd - HH:mm:ss")] >>> Ripping wird gestartet..." -ForegroundColor Green
+Write-Host "[$(Get-Date -Format "yyyy-MM-dd - HH:mm:ss")] >>> Start Ripping..." -ForegroundColor Green
 
 # Execute makemkvcon for ripping (same logic as in Bash)
 & "$makemkvDir\makemkvcon.exe" --minlength=$minlength -r --decrypt --directio=true mkv disc:0 all "$workingDir"
@@ -79,11 +80,11 @@ Get-ChildItem "$workingDir\*.mkv"
 if ($mkvFiles.Count -gt 0) {
     # Find the largest MKV file and store only the name
     $largestFileName = ($mkvFiles | Sort-Object Length -Descending | Select-Object -First 1).Name
-    Write-Host "[$(Get-Date -Format "yyyy-MM-dd - HH:mm:ss")] >>> Biggest File: '$largestFileName'`n" -ForegroundColor Green
+    Write-Host "[$(Get-Date -Format "yyyy-MM-dd - HH:mm:ss")] >>> Largest File: '$largestFileName'`n" -ForegroundColor Green
 
     # Move the largest MKV file and rename it with $foundtitle
     Move-Item -Path "$workingDir\$largestFileName" -Destination "$doneDir\$foundtitle.mkv"
-    Write-Host "[$(Get-Date -Format "yyyy-MM-dd - HH:mm:ss")] >>> '$workingDir\$largestFileName' wurde nach '$doneDir\$foundtitle.mkv' verschoben`n" -ForegroundColor Green
+    Write-Host "[$(Get-Date -Format "yyyy-MM-dd - HH:mm:ss")] >>> '$workingDir\$largestFileName' moved to '$doneDir\$foundtitle.mkv'`n" -ForegroundColor Green
 
     # Rename the moved mkv file
     # Rename-Item -Path "$doneDir\$largestFileName" -NewName "$foundtitle.mkv"
@@ -95,7 +96,7 @@ if ($mkvFiles.Count -gt 0) {
         Write-Host "[$(Get-Date -Format "yyyy-MM-dd - HH:mm:ss")] >>> Deleted: $($_.Name)" -ForegroundColor Green
     }
 } else {
-    Write-Host "[$(Get-Date -Format "yyyy-MM-dd - HH:mm:ss")] >>> Keine *.mkv Dateien in '$workingDir' gefunden" -ForegroundColor Red
+    Write-Host "[$(Get-Date -Format "yyyy-MM-dd - HH:mm:ss")] >>> No *.mkv Files found in '$workingDir'!" -ForegroundColor Red
     exit
 }
 
@@ -106,7 +107,7 @@ if ($mkvFiles.Count -gt 0) {
 Write-Host "[$(Get-Date -Format "yyyy-MM-dd - HH:mm:ss")] >>> Ejecting Drive..." -ForegroundColor Cyan
 (New-Object -com "WMPlayer.OCX.7").cdromcollection.item(0).eject()
 
-Write-Host "[$(Get-Date -Format "yyyy-MM-dd - HH:mm:ss")] >>>Titel: '$foundtitle.mkv' wurde erstellt<<<" -ForegroundColor Green
+Write-Host "[$(Get-Date -Format "yyyy-MM-dd - HH:mm:ss")] >>>Title: '$foundtitle.mkv' created<<<" -ForegroundColor Green
 
 # Stop logging
 Stop-Transcript
