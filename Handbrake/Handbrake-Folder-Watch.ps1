@@ -2,12 +2,12 @@ $watchFolder = "D:\Ripping\03_Handbrake-working"
 
 # Define Logfile
 $timestamp = Get-Date -Format "yyyy-MM-dd"
-$logFile = "D:\Ripping\98_AutoRip-Logs\Handbrake\handbrake_$timestamp.log"
+$logFile = "D:\Ripping\98_WinRipEncode-Logs\Handbrake\handbrake_$timestamp.log"
 Start-Transcript -Path $logFile -Append
 
-Write-Host "----------------------------------------" -ForegroundColor Magenta
+Write-Host "========================================" -ForegroundColor Magenta
 Write-Host "--------------WinRipEncode--------------" -ForegroundColor Cyan
-Write-Host "----------------------------------------" -ForegroundColor Magenta
+Write-Host "========================================" -ForegroundColor Magenta
 
 # Log current date and time
 Write-Host (Get-Date) -ForegroundColor Magenta

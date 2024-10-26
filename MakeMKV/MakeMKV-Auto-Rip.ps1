@@ -10,10 +10,7 @@ $workingDir = "D:\Ripping\01_MakeMKV-working"
 $doneDir = "D:\Ripping\02_MakeMKV-done"
 
 # Directory for the temporary info/title file which is used to get the movie title
-$rawTitleFile = "D:\Ripping\98_AutoRip-Logs\title-raw.txt"
-
-# Optical Drive Letter
-$discletter = "E:"
+$rawTitleFile = "D:\Ripping\98_WinRipEncode-Logs\MakeMKV\title-raw.txt"
 
 # Search Mask to extract the title. The String before and after the title. For me this was my BD-Drive Name/SN and the Drive Letter
 $searchBeforeTitle = "BD-RE HL-DT-ST BD-RE BU40N 1\.03 7MEQVHAKKGZ012"
@@ -26,12 +23,12 @@ $minlength = "240"
 
 # Define Logfile
 $timestamp = Get-Date -Format "yyyy-MM-dd_HH-mm"
-$logFile = "D:\Ripping\98_AutoRip-Logs\MakeMKV\MakeMKV_$timestamp.log"
+$logFile = "D:\Ripping\98_WinRipEncode-Logs\MakeMKV\MakeMKV_$timestamp.log"
 Start-Transcript -Path $logFile -Append
 
-Write-Host "----------------------------------------" -ForegroundColor Magenta
+Write-Host "========================================" -ForegroundColor Magenta
 Write-Host "--------------WinRipEncode--------------" -ForegroundColor Cyan
-Write-Host "----------------------------------------" -ForegroundColor Magenta
+Write-Host "========================================" -ForegroundColor Magenta
 
 # Log current date and time
 Write-Host (Get-Date) -ForegroundColor Magenta
