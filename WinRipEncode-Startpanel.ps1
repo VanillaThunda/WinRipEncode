@@ -21,7 +21,13 @@ $button2.Text = "Start Handbrake Watcher"
 $button3 = New-Object System.Windows.Forms.Button
 $button3.Location = New-Object System.Drawing.Point(50, 150)
 $button3.Size = New-Object System.Drawing.Size(200, 30)
-$button3.Text = "Start Filebot Watcher"
+$button3.Text = "Start Filebot Auto-Rename"
+
+# Button 4 erstellen
+$button4 = New-Object System.Windows.Forms.Button
+$button4.Location = New-Object System.Drawing.Point(50, 200)
+$button4.Size = New-Object System.Drawing.Size(200, 30)
+$button4.Text = "Start Copy Movies"
 
 # Ereignis-Handler für Button 1
 $button1.Add_Click({
@@ -41,10 +47,17 @@ $button3.Add_Click({
     Start-Process powershell -ArgumentList "-NoProfile -ExecutionPolicy Bypass -NoExit -File `"$scriptPath3`""
 })
 
+# Ereignis-Handler für Button 3
+$button4.Add_Click({
+    $scriptPath4 = "C:\Users\Valentin\Documents\GitHub\WinRipEncode\Robocopy\Copy-Movies.ps1"
+    Start-Process powershell -ArgumentList "-NoProfile -ExecutionPolicy Bypass -NoExit -File `"$scriptPath4`""
+})
+
 # Buttons zum Formular hinzufügen
 $form.Controls.Add($button1)
 $form.Controls.Add($button2)
 $form.Controls.Add($button3)
+$form.Controls.Add($button4)
 
 # Formular anzeigen
 $form.ShowDialog()
