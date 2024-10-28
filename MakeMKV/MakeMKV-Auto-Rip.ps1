@@ -9,6 +9,9 @@ $workingDir = "D:\Ripping\01_MakeMKV-working"
 # Output dir for the finished MKV-Files
 $doneDir = "D:\Ripping\02_MakeMKV-done"
 
+# Dir for the Ripped Extras on from the Disc - for further Review in seperate Dir
+$extrasDir = "D:\Ripping\03_MakeMKV-extras"
+
 # Directory for the temporary info/title file which is used to get the movie title
 $rawTitleFile = "D:\Ripping\98_WinRipEncode-Logs\MakeMKV\title-raw.txt"
 
@@ -89,8 +92,11 @@ if ($mkvFiles.Count -gt 0) {
 
     # Delete the remaining MKV files (if any), ensuring the largest one is not deleted
     $mkvFiles | Where-Object { $_.Name -ne $largestFileName } | ForEach-Object {
-        Remove-Item (Join-Path $workingDir $_.Name)
-        Write-Host "[$(Get-Date -Format "yyyy-MM-dd - HH:mm:ss")] >>> Deleted: $($_.Name)" -ForegroundColor Green
+        # Remove-Item (Join-Path $workingDir $_.Name)
+        # Write-Host "[$(Get-Date -Format "yyyy-MM-dd - HH:mm:ss")] >>> Deleted: $($_.Name)" -ForegroundColor Green
+        $extraFile = Join-Path $workingDir $_.Name
+        Move-Item -Path "$extraFile" -Destination $extrasDir
+        Write-Host "[$(Get-Date -Format "yyyy-MM-dd - HH:mm:ss")] >>> Moved Extra-File: $($_.Name)" -ForegroundColor Green
     }
 } else {
     Write-Host "[$(Get-Date -Format "yyyy-MM-dd - HH:mm:ss")] >>> No *.mkv Files found in '$workingDir'!" -ForegroundColor Red

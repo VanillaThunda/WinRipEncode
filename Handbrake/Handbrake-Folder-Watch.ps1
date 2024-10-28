@@ -1,4 +1,4 @@
-$watchFolder = "D:\Ripping\03_Handbrake-working"
+$watchFolder = "D:\Ripping\02_MakeMKV-done"
 
 # Define Logfile
 $timestamp = Get-Date -Format "yyyy-MM-dd"
@@ -19,7 +19,7 @@ $action = {
     param($source, $eventArgs)
 
     Write-Host "[$(Get-Date -Format "yyyy-MM-dd - HH:mm:ss")] >>> action started..." -ForegroundColor Cyan
-    $handbrakePresetFile = "C:\Users\Valentin\Documents\Handbrake\Handbrake_Preset_V1.json"
+    $handbrakePresetFile = "D:\Ripping\99_Other\Handbrake_Preset_V1.json"
     $handbrakePresetName = "NVENC Audio Passthru"
     $handBrakeCLI = "C:\Program Files\HandBrake_CLI\HandBrakeCLI.exe"
     $outputFolder = "D:\Ripping\04_Handbrake-done"

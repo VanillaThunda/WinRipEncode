@@ -23,17 +23,30 @@ switch ($question1.ToLower()) {
         Write-Host "[$(Get-Date -Format "yyyy-MM-dd - HH:mm:ss")] >>> Starting Copy" -ForegroundColor Cyan
         Copy-Item -Path $sourceDir -Destination $destinationDir -Recurse
         Write-Host "[$(Get-Date -Format "yyyy-MM-dd - HH:mm:ss")] >>> Done Copying" -ForegroundColor Green
+
+        $question2 = Read-Host "Remove the Source-Files from: '$sourceDir'?`n(y = yes, Remove Files; n = no, Dont Remove the Files)"
+
+        switch ($question2.ToLower()) {
+            "y" {
+                Write-Host "[$(Get-Date -Format "yyyy-MM-dd - HH:mm:ss")] >>> Deleting Source Files..." -ForegroundColor DarkYellow
+                Remove-Item "$sourceDir\*.mkv"
+            }
+            "n" {
+                Write-Host "[$(Get-Date -Format "yyyy-MM-dd - HH:mm:ss")] >>> Done." -ForegroundColor Green
+            }
+            Default {
+                Write-Host "[$(Get-Date -Format "yyyy-MM-dd - HH:mm:ss")] >>> No Valid Input..." -ForegroundColor DarkRed
+            }
+        }
+
     }
     "n" {
         Write-Host "[$(Get-Date -Format "yyyy-MM-dd - HH:mm:ss")] >>> Abort" -ForegroundColor DarkRed
     }
     Default {
-        Write-Host "No Valid Input..." -ForegroundColor DarkRed
+        Write-Host "[$(Get-Date -Format "yyyy-MM-dd - HH:mm:ss")] >>> No Valid Input..." -ForegroundColor DarkRed
     }
 }
-
-
-# Ask Question: Should the elements from Source folder get deleted?
 
 # Stop logging
 Stop-Transcript
